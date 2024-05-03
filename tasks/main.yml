@@ -1,0 +1,137 @@
+---
+# tasks file for ansile-role-sonatype-nexus-oss
+- name: Load a variable file based on the OS type
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - '{{ansible_os_family}}.yaml'
+      paths:
+        - 'vars'
+
+- name: Configure Harderning OS
+  block: 
+    - ansible.posix.sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        sysctl_file: /etc/sysctl.d/99-opensearch.conf
+
+    - ansible.posix.sysctl:
+        name: fs.file-max
+        value: '65536'
+        state: present
+        sysctl_file: /etc/sysctl.d/99-opensearch.conf
+
+    - pam_limits:
+        domain: '*'
+        limit_type: hard
+        limit_item: nofile
+        value: '65536'
+
+    - pam_limits:
+        domain: '*'
+        limit_type: hard
+        limit_item: nproc
+        value: '4096'
+
+- name: Install dependencies for installing
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - zip
+    - unzip
+    - tar
+    - curl
+    - wget
+
+- name: Setup & pre-requisites
+  block:
+  - name: Ensure group 'opensearch' exists
+    ansible.builtin.group:
+      name: "{{ opensearch_user }}"
+      state: present
+
+  - name: Add the user 'opensearch' exists
+    ansible.builtin.user:
+      name: "{{ opensearch_user }}"
+      comment: user for using opensearch engine
+      group: "{{ opensearch_user }}"
+      append: yes
+
+- name: Install packages
+  block:
+  - name: Download opensearch
+    ansible.builtin.get_url:
+      url: "{{ opensearch_download_url }}"
+      dest: "/tmp/opensearch.{{ os_package }}"
+    when: opensearch_download
+
+  - name: Check file has been downloaded!
+    ansible.builtin.stat:
+      path: "/tmp/opensearch.{{ os_package }}"
+    register: bin_files
+
+  - name: Install opensearch from file for RedHat
+    ansible.builtin.yum:
+      name: /tmp/opensearch.{{ os_package }}
+      disable_gpg_check: true
+      state: present
+    when: 
+    - bin_files.stat.exists
+    - ansible_os_family == 'RedHat'
+
+  - name: Install opensearch from file for Debian
+    ansible.builtin.apt:
+      deb: /tmp/opensearch.{{ os_package }}
+    when: 
+    - bin_files.stat.exists
+    - ansible_os_family == 'Debian'
+
+- name: Configure rule iptables & selinux
+  block:
+  - name: Gathering service facts.
+    service_facts:
+    register: services_state
+
+  - name: Put SELinux in permissive mode
+    ansible.posix.selinux:
+      policy: targeted
+      state: permissive
+    when: ansible_os_family == 'RedHat'
+
+  - name: Setup firewall-cmd for RedHat family
+    ansible.posix.firewalld:
+      port: "{{ item }}/{{ opensearch_default_proto }}"
+      zone: public
+      permanent: yes
+      immediate: true
+      state: enabled
+    loop:
+      - "{{ opensearch_ui_port }}"
+      - "{{ opensearch_rest_port }}"
+      - "{{ opensearch_cross_cluster }}"
+      - "{{ opensearch_node_communication }}"
+      - "{{ opensearch_analyzer }}"
+    when: 
+    - ansible_os_family == 'RedHat'
+    - services_state.ansible_facts.services["firewalld.service"] is defined
+    - services_state.ansible_facts.services["firewalld.service"].state == 'running'
+  
+  - name: Setup ufw for Debian family
+    community.general.ufw:
+      state: enabled
+      port: "{{ item }}"
+      proto: "{{ opensearch_default_proto }}"
+      policy: allow
+    loop:
+      - "{{ opensearch_ui_port }}"
+      - "{{ opensearch_rest_port }}"
+      - "{{ opensearch_cross_cluster }}"
+      - "{{ opensearch_node_communication }}"
+      - "{{ opensearch_analyzer }}"
+    when: 
+    - ansible_os_family == 'Debian'
+    - services_state.ansible_facts.services["firewalld.service"] is defined
+    - services_state.ansible_facts.services["firewalld.service"].state == 'running'
