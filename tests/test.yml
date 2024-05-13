@@ -3,5 +3,7 @@
   become: true
   vars:
     opensearch_download: true
+    opensearch_version: 2.11.1
+    OPENSEARCH_INITIAL_ADMIN_PASSWORD: passwordnyaAdmin
   roles:
     - ../../ansible-role-opensearch
