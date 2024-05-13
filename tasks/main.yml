@@ -74,6 +74,8 @@
     register: bin_files
 
   - name: Install opensearch from file for RedHat
+    environment:
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: "{{ default_admin_password | default('Admin/4u@2024') }}"
     ansible.builtin.yum:
       name: /tmp/opensearch.{{ os_package }}
       disable_gpg_check: true
@@ -83,6 +85,8 @@
     - ansible_os_family == 'RedHat'
 
   - name: Install opensearch from file for Debian
+    environment:
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: "{{ default_admin_password | default('Admin/4u@2024') }}"
     ansible.builtin.apt:
       deb: /tmp/opensearch.{{ os_package }}
     when: 
