@@ -5,3 +5,5 @@ opensearch_jvm_xmx: '4096'
 os_arch: linux-x64
 opensearch_config_file: /etc/opensearch/opensearch.yml
 opensearch_dashboard_config_file: /etc/opensearch-dashboards/opensearch_dashboards.yml
+opensearch_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_version }}/opensearch-{{ opensearch_version }}-{{ os_arch }}.{{ os_package }}
+opensearch_dashboard_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/{{ opensearch_version }}/opensearch-dashboards-{{ opensearch_version }}-{{ os_arch }}.{{ os_package }}
