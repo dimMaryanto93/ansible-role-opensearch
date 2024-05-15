@@ -8,9 +8,12 @@ opensearch_node_communication: 9300
 opensearch_analyzer: 9600
 opensearch_version: 2.11.1
 opensearch_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_version }}/opensearch-{{ opensearch_version }}-{{ os_arch }}.{{ os_package }}
+opensearch_dashboard_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/{{ opensearch_version }}/opensearch-dashboards-{{ opensearch_version }}-{{ os_arch }}.{{ os_package }}
 opensearch_user: opensearch
 opensearch_download: true
+opensearch_dashboard_download: true
 opensearch_config_file: /etc/opensearch/opensearch.yml
+opensearch_dashboard_config_file: /etc/opensearch-dashboards/opensearch_dashboards.yml
 opensearch_cluster_enabled: false
 opensearch_cluster_name: logging
 opensearch_network_host: 0.0.0.0

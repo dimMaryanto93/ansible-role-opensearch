@@ -2,10 +2,11 @@
 - hosts: ["all"]
   become: true
   vars:
-    opensearch_download: true
+    opensearch_download: false
+    opensearch_dashboard_download: false
     opensearch_version: 2.11.1
     default_admin_password: "Admin/4u@2024"
-    opensearch_cluster_enabled: trueå
+    opensearch_cluster_enabled: true
     opensearch_cluster_name: "logging_system"
   roles:
     - ../../ansible-role-opensearch

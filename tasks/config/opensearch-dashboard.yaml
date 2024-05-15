@@ -1,0 +1,34 @@
+- name: Setup server.port property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_dashboard_config_file }}"
+    regexp: '^server.port:'
+    insertafter: '^server.port:'
+    line: "server.port: {{ opensearch_ui_port }}"
+
+- name: Setup server.host property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_dashboard_config_file }}"
+    regexp: '^server.host:'
+    insertafter: '^server.host:'
+    line: "server.host: {{ opensearch_network_host }}"
+
+- name: Setup opensearch.hosts property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_dashboard_config_file }}"
+    regexp: '^opensearch.hosts:'
+    insertafter: '# opensearch.hosts:'
+    line: "opensearch.hosts: [\"http://localhost:9200\"]"
+
+- name: Setup opensearch.username property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_dashboard_config_file }}"
+    regexp: '^opensearch.username:'
+    insertafter: '^# opensearch.username:'
+    line: "opensearch.username: \"{{ opensearch_dashboard_username | default('admin') }}\""
+
+- name: Setup opensearch.password property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_dashboard_config_file }}"
+    regexp: '^opensearch.password:'
+    insertafter: '^# opensearch.password:'
+    line: "opensearch.password: \"{{ opensearch_dashboard_password | default('admin') }}\""

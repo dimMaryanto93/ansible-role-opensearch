@@ -25,8 +25,42 @@
     - tar
     - curl
     - wget
+
+- name: Install opensearch dashboard
+  when: opensearch_dashboard_enabled is defined
+  block:
+  - name: Download opensearch dashboard
+    ansible.builtin.get_url:
+      url: "{{ opensearch_dashboard_download_url }}"
+      dest: "/tmp/opensearch-dashboard.{{ os_package }}"
+    when: 
+    - opensearch_dashboard_download
+
+  - name: Check file has been downloaded!
+    ansible.builtin.stat:
+      path: "/tmp/opensearch-dashboard.{{ os_package }}"
+    register: bin_files_dashboard
+
+  - name: Install opensearch-dashboard from file for RedHat
+    ansible.builtin.yum:
+      name: /tmp/opensearch-dashboard.{{ os_package }}
+      disable_gpg_check: true
+      state: present
+    when: 
+    - bin_files_dashboard.stat.exists
+    - ansible_os_family == 'RedHat'
+
+  - name: Install opensearch-dashboard from file for Debian
+    ansible.builtin.apt:
+      deb: /tmp/opensearch-dashboard.{{ os_package }}
+    when: 
+    - bin_files_dashboard.stat.exists
+    - ansible_os_family == 'Debian'
+
+  - name: Configure Opensearch
+    include_tasks: config/opensearch-dashboard.yaml
   
-- name: Install packages
+- name: Install opensearch
   block:
   - name: Download opensearch
     ansible.builtin.get_url:
@@ -67,7 +101,10 @@
     state: started
     daemon_reload: true
     enabled: true
-    name: 'opensearch'
+    name: "{{ item }}"
+  loop:
+  - opensearch
+  - opensearch-dashboards
 
 - name: Configure rule iptables & selinux
   block:
