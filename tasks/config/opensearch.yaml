@@ -13,12 +13,11 @@
     line: "cluster.name: {{ opensearch_cluster_name | default ('logging') }}"
   when: opensearch_cluster_enabled
 
-# - name: Setup node.roles property if it's set
-#   ansible.builtin.lineinfile:
-#     path: "{{ opensearch_config_file }}"
-#     insertafter: '^#node.name:'
-#     line: "node.roles: {{ os_roles }}"
-#   when: os_roles is defined
+- name: Setup node.roles property if it's set
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    insertafter: '^#node.name:'
+    line: "node.roles: {{ os_node_roles default('[ ]') }}"
 
 - name: Setup discovery.seed_hosts property
   ansible.builtin.lineinfile:
@@ -35,7 +34,6 @@
     line: "cluster.initial_master_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
   when: 
   - opensearch_cluster_enabled
-  - os_master is defined
 
 - name: Setup cluster.initial_cluster_manager_nodes property
   ansible.builtin.lineinfile:
@@ -45,7 +43,6 @@
     line: "cluster.initial_cluster_manager_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
   when: 
   - opensearch_cluster_enabled
-  - os_cloud_manager is defined
 
 - name: Disable https certification
   ansible.builtin.lineinfile:
