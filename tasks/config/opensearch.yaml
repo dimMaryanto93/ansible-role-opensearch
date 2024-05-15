@@ -17,7 +17,7 @@
   ansible.builtin.lineinfile:
     path: "{{ opensearch_config_file }}"
     insertafter: '^#node.name:'
-    line: "node.roles: {{ os_node_roles default('[ ]') }}"
+    line: "node.roles: {{ os_node_roles | default('[ ]') }}"
 
 - name: Setup discovery.seed_hosts property
   ansible.builtin.lineinfile:
@@ -26,14 +26,14 @@
     insertafter: '^#discovery.seed_hosts'
     line: "discovery.seed_hosts: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
 
-- name: Setup cluster.initial_master_nodes property
-  ansible.builtin.lineinfile:
-    path: "{{ opensearch_config_file }}"
-    regexp: '^cluster.initial_cluster_manager_nodes:'
-    insertafter: '^#cluster.initial_cluster_manager_nodes:'
-    line: "cluster.initial_master_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
-  when: 
-  - opensearch_cluster_enabled
+# - name: Setup cluster.initial_master_nodes property
+#   ansible.builtin.lineinfile:
+#     path: "{{ opensearch_config_file }}"
+#     regexp: '^cluster.initial_cluster_manager_nodes:'
+#     insertafter: '^#cluster.initial_cluster_manager_nodes:'
+#     line: "cluster.initial_master_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
+#   when: 
+#   - opensearch_cluster_enabled
 
 - name: Setup cluster.initial_cluster_manager_nodes property
   ansible.builtin.lineinfile:
