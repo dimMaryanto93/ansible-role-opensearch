@@ -1,12 +1,76 @@
-- name: Setup node name
+- name: Setup node.name property
   ansible.builtin.lineinfile:
     path: "{{ opensearch_config_file }}"
-    regexp: '^node.name='
-    insertafter: '^#node.name='
-    line: "node.name={{ inventory_hostname }}"
+    regexp: '^node.name:'
+    insertafter: '^#node.name:'
+    line: "node.name: {{ inventory_hostname }}"
+
+- name: Setup cluster.name property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^cluster.name:'
+    insertafter: '^#cluster.name:'
+    line: "cluster.name: {{ opensearch_cluster_name | default ('logging') }}"
+  when: opensearch_cluster_enabled
+
+# - name: Setup node.roles property if it's set
+#   ansible.builtin.lineinfile:
+#     path: "{{ opensearch_config_file }}"
+#     insertafter: '^#node.name:'
+#     line: "node.roles: {{ os_roles }}"
+#   when: os_roles is defined
+
+- name: Setup discovery.seed_hosts property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^discovery.seed_hosts:'
+    insertafter: '^#discovery.seed_hosts'
+    line: "discovery.seed_hosts: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
+
+- name: Setup cluster.initial_master_nodes property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^cluster.initial_cluster_manager_nodes:'
+    insertafter: '^#cluster.initial_cluster_manager_nodes:'
+    line: "cluster.initial_master_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
+  when: 
+  - opensearch_cluster_enabled
+  - os_master is defined
+
+- name: Setup cluster.initial_cluster_manager_nodes property
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^cluster.initial_cluster_manager_nodes:'
+    insertafter: '^#cluster.initial_cluster_manager_nodes:'
+    line: "cluster.initial_cluster_manager_nodes: [\"{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}\"]"
+  when: 
+  - opensearch_cluster_enabled
+  - os_cloud_manager is defined
 
 - name: Disable https certification
   ansible.builtin.lineinfile:
     path: "{{ opensearch_config_file }}"
-    regexp: '^plugins.security.ssl.http.enabled='
-    line: "plugins.security.ssl.http.enabled=false"
+    regexp: '^plugins.security.ssl.http.enabled: true'
+    insertafter: '^plugins.security.ssl.http.enabled: true'
+    line: "plugins.security.ssl.http.enabled: false"
+
+# - name: Enable memory lock
+#   ansible.builtin.lineinfile:
+#     path: "{{ opensearch_config_file }}"
+#     regexp: '^bootstrap.memory_lock: true'
+#     insertafter: '^#bootstrap.memory_lock: true'
+#     line: "bootstrap.memory_lock: true"
+
+- name: Setup expose host
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^#network.host:'
+    insertafter: '^network.host:'
+    line: "network.host: {{ opensearch_network_host }}"
+
+- name: Setup expose port
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^http.port:'
+    insertafter: '^#http.port:'
+    line: "http.port: {{ opensearch_rest_port }}"

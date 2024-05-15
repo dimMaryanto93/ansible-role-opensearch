@@ -11,3 +11,6 @@ opensearch_download_url: https://artifacts.opensearch.org/releases/bundle/opense
 opensearch_user: opensearch
 opensearch_download: true
 opensearch_config_file: /etc/opensearch/opensearch.yml
+opensearch_cluster_enabled: false
+opensearch_cluster_name: logging
+opensearch_network_host: 0.0.0.0

@@ -1,5 +1,5 @@
 ---
-# tasks file for ansile-role-sonatype-nexus-oss
+tasks file for ansile-role-sonatype-nexus-oss
 - name: Load a variable file based on the OS type
   include_vars: "{{ lookup('first_found', params) }}"
   vars:
@@ -58,6 +58,9 @@
     when: 
     - bin_files.stat.exists
     - ansible_os_family == 'Debian'
+
+  - name: Configure Opensearch
+    include_tasks: config/opensearch.yaml
 
 - name: Make sure a service unit is running
   ansible.builtin.systemd_service:
