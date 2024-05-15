@@ -4,8 +4,8 @@
   vars:
     opensearch_download: true
     opensearch_version: 2.11.1
-    opensearch_cluster_enabled: true
     default_admin_password: "Admin/4u@2024"
+    opensearch_cluster_enabled: trueå
     opensearch_cluster_name: "logging_system"
   roles:
     - ../../ansible-role-opensearch
