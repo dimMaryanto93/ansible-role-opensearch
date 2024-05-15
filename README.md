@@ -51,10 +51,7 @@ Ada beberapa variable yang temen-temen bisa gunakan untuk setting sonatype nexus
 Dependencies
 ------------
 
-Untuk mengginstall Sonatype Nexus OSS kita membuatuhkan Java Development Kit (JDK) sesuai dengan requirment dari official websiste [seperti berikut](https://help.sonatype.com/repomanager3/installation/system-requirements#SystemRequirements-Linux)
-
-Kita bisa menggunakan role [oracle_java](https://galaxy.ansible.com/dimmaryanto93/oracle_java) atau install manualy
-
+None
 
 Example Playbook
 ----------------
