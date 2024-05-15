@@ -1,0 +1,12 @@
+- name: Setup node name
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^node.name='
+    insertafter: '^#node.name='
+    line: "node.name={{ inventory_hostname }}"
+
+- name: Disable https certification
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    regexp: '^plugins.security.ssl.http.enabled='
+    line: "plugins.security.ssl.http.enabled=false"

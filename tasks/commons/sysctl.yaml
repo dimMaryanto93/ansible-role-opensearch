@@ -1,0 +1,23 @@
+- ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-opensearch.conf
+
+- ansible.posix.sysctl:
+    name: fs.file-max
+    value: '65536'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-opensearch.conf
+
+- pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nofile
+    value: '65536'
+
+- pam_limits:
+    domain: '*'
+    limit_type: hard
+    limit_item: nproc
+    value: '4096'

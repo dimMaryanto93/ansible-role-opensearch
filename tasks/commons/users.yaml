@@ -1,0 +1,11 @@
+- name: Ensure group 'opensearch' exists
+  ansible.builtin.group:
+    name: "{{ opensearch_user }}"
+    state: present
+
+- name: Add the user 'opensearch' exists
+  ansible.builtin.user:
+    name: "{{ opensearch_user }}"
+    comment: user for using opensearch engine
+    group: "{{ opensearch_user }}"
+    append: yes
