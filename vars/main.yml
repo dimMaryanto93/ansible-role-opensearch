@@ -3,3 +3,5 @@
 opensearch_jvm_xms: '4096'
 opensearch_jvm_xmx: '4096'
 os_arch: linux-x64
+opensearch_config_file: /etc/opensearch/opensearch.yml
+opensearch_dashboard_config_file: /etc/opensearch-dashboards/opensearch_dashboards.yml

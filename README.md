@@ -59,13 +59,24 @@ Kita bisa menggunakan role [oracle_java](https://galaxy.ansible.com/dimmaryanto9
 Example Playbook
 ----------------
 
+```ini
+opensearch_cm      ansible_host=10.12.10.57   ansible_user=admin    ansible_port=22    os_node_roles="[cluster_manager]" opensearch_dashboard_enabled=true
+opensearch_dt1     ansible_host=10.12.10.58   ansible_user=admin    ansible_port=22    os_node_roles="[data, ingest]"
+opensearch_dt2     ansible_host=10.12.10.59   ansible_user=admin    ansible_port=22    os_node_roles="[data, ingest]"
+```
+
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
 ```ansible
 - hosts: servers
   become: true
+  vars:
+    opensearch_version: 2.11.1
+    default_admin_password: "Admin/4u@2024"
+    opensearch_cluster_enabled: false # set to true if you want cluster mode
+    opensearch_cluster_name: "logging_system"
   roles:
-      - { role: dimmaryanto93.skywalking }
+      - { role: dimmaryanto93.opensearch }
 ```
 
 License
