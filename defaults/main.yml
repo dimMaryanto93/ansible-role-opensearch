@@ -8,8 +8,6 @@ opensearch_node_communication: 9300
 opensearch_analyzer: 9600
 opensearch_version: 2.11.1
 opensearch_user: opensearch
-opensearch_download: true
-opensearch_dashboard_download: true
 opensearch_cluster_enabled: false
 opensearch_cluster_name: logging
 opensearch_network_host: 0.0.0.0
