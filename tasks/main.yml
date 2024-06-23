@@ -97,7 +97,7 @@
     include_tasks: config/opensearch.yaml
 
 - name: Make sure a service unit is running
-  ansible.builtin.systemd_service:
+  ansible.builtin.systemd:
     state: started
     daemon_reload: true
     enabled: true
