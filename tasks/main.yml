@@ -96,7 +96,7 @@
   - name: Configure Opensearch
     include_tasks: config/opensearch.yaml
 
-- name: Make sure a service unit is running
+- name: Make sure a service unit is running for opensearch
   ansible.builtin.systemd:
     state: started
     daemon_reload: true
@@ -104,6 +104,15 @@
     name: "{{ item }}"
   loop:
   - opensearch
+
+- name: Make sure a service unit is running for dashboard
+  ansible.builtin.systemd:
+    state: started
+    daemon_reload: true
+    enabled: true
+    name: "{{ item }}"
+  when: opensearch_dashboard_enabled is defined
+  loop:
   - opensearch-dashboards
 
 - name: Configure rule iptables & selinux
