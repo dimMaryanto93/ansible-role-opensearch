@@ -51,6 +51,12 @@
     insertafter: '^plugins.security.ssl.http.enabled: true'
     line: "plugins.security.ssl.http.enabled: false"
 
+- name: Disable security plugin
+  ansible.builtin.lineinfile:
+    path: "{{ opensearch_config_file }}"
+    line: "plugins.security.disabled: true"
+    create: yes
+
 # - name: Enable memory lock
 #   ansible.builtin.lineinfile:
 #     path: "{{ opensearch_config_file }}"
