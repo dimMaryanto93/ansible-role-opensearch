@@ -6,7 +6,7 @@ opensearch_rest_port: 9200
 opensearch_cross_cluster: 9250
 opensearch_node_communication: 9300
 opensearch_analyzer: 9600
-opensearch_version: 2.11.1
+opensearch_version: 2.15.0
 opensearch_user: opensearch
 opensearch_cluster_enabled: false
 opensearch_cluster_name: logging

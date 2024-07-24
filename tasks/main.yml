@@ -102,6 +102,7 @@
     daemon_reload: true
     enabled: true
     name: "{{ item }}"
+  when: auto_opensearch_enabled is defined
   loop:
   - opensearch
 
@@ -111,7 +112,7 @@
     daemon_reload: true
     enabled: true
     name: "{{ item }}"
-  when: opensearch_dashboard_enabled is defined
+  when: auto_opensearch_dashboard_enabled is defined
   loop:
   - opensearch-dashboards
 
